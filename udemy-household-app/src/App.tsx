@@ -132,6 +132,8 @@ function App() {
               path="/report"
               element={
                 <Report
+                  currentMonth={currentMonth}
+                  setCurrentMonth={setCurrentMonth}
                 />
               }
             />
