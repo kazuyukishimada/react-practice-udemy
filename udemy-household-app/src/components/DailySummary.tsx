@@ -14,7 +14,7 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
     <Box>
       <Grid container spacing={2}>
         {/* 収入 */}
-        <Grid item xs={6} display={"flex"}>
+        <Grid size={{xs: 6}} display={"flex"}>
           <Card
             sx={{ bgcolor: (theme) => theme.palette.grey[100], flexGrow: 1 }}
           >
@@ -23,10 +23,12 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
                 収入
               </Typography>
               <Typography
-                color={(theme) => theme.palette.incomeColor.main}
                 textAlign="right"
                 fontWeight="fontWeightBold"
-                sx={{ wordBreak: "break-all" }}
+                sx={{
+                  wordBreak: "break-all",
+                  color: (theme) => theme.palette.incomeColor.main,
+                }}
               >
                 ¥{formatCurrency(income)}
               </Typography>
@@ -34,7 +36,7 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
           </Card>
         </Grid>
         {/* 支出 */}
-        <Grid item xs={6} display={"flex"}>
+        <Grid size={{xs: 6}} display={"flex"}>
           <Card
             sx={{ bgcolor: (theme) => theme.palette.grey[100], flexGrow: 1 }}
           >
@@ -43,10 +45,12 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
                 支出
               </Typography>
               <Typography
-                color={(theme) => theme.palette.expenseColor.main}
                 textAlign="right"
                 fontWeight="fontWeightBold"
-                sx={{ wordBreak: "break-all" }}
+                sx={{
+                  wordBreak: "break-all",
+                  color: (theme) => theme.palette.expenseColor.main,
+                }}
               >
                 ¥{formatCurrency(expense)}
               </Typography>
@@ -54,7 +58,7 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
           </Card>
         </Grid>
         {/* 残高 */}
-        <Grid item xs={12} display={"flex"}>
+        <Grid size={{xs: 12}} display={"flex"}>
           <Card
             sx={{ bgcolor: (theme) => theme.palette.grey[100], flexGrow: 1 }}
           >
@@ -63,10 +67,12 @@ const DailySummary = ({dailyTransactions}: DailySummaryProps) => {
                 残高
               </Typography>
               <Typography
-                color={(theme) => theme.palette.balanceColor.main}
                 textAlign="right"
                 fontWeight="fontWeightBold"
-                sx={{ wordBreak: "break-all" }}
+                sx={{
+                  wordBreak: "break-all",
+                  color: (theme) => theme.palette.balanceColor.main,
+                }}
               >
                 ¥{formatCurrency(balance)}
               </Typography>
