@@ -20,6 +20,7 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
 
   // 全取引データを取得
   useEffect(() => {
@@ -39,6 +40,8 @@ function App() {
         } else {
           console.error('Error fetching transactions:', error);
         }
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchTransactions();
@@ -134,6 +137,8 @@ function App() {
                 <Report
                   currentMonth={currentMonth}
                   setCurrentMonth={setCurrentMonth}
+                  monthlyTransactions={monthlyTransactions}
+                  isLoading={isLoading}
                 />
               }
             />
