@@ -96,11 +96,18 @@ function App() {
   }
 
   // 削除
-  const handleDeleteTransaction = async (transactionId: string) => {
+  const handleDeleteTransaction = async (
+      transactionId: string | readonly string[]
+    ) => {
     try {
-      await deleteDoc(doc(db, "Transactions", transactionId));
+      const idsToDelete = Array.isArray(transactionId)
+        ? transactionId
+        : [transactionId];
+      for(const id of idsToDelete) {
+        await deleteDoc(doc(db, "Transactions", id));
+      }
       const filterdTransactions = transactions.filter(
-        (transaction) => transaction.id !== transactionId
+        (transaction) => !idsToDelete.includes(transaction.id)
       );
       setTransactions(filterdTransactions);
     } catch (err) {
@@ -139,6 +146,7 @@ function App() {
                   setCurrentMonth={setCurrentMonth}
                   monthlyTransactions={monthlyTransactions}
                   isLoading={isLoading}
+                  onDeleteTransaction={handleDeleteTransaction}
                 />
               }
             />
