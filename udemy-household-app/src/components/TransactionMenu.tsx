@@ -26,6 +26,9 @@ interface TransactionMenuProps {
   currentDay: string,
   onAddTransactionForm: () => void,
   onSelectTransaction: (transaction: Transaction) => void,
+  isMobile: boolean,
+  open: boolean,
+  onClose: () => void,
 }
 
 const TransactionMenu = ({
@@ -33,27 +36,45 @@ const TransactionMenu = ({
   currentDay,
   onAddTransactionForm,
   onSelectTransaction,
+  isMobile,
+  open,
+  onClose,
 }: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
 
   return (
     <Drawer
       sx={{
-        width: menuDrawerWidth,
+        width: isMobile ? "auto" : menuDrawerWidth,
         "& .MuiDrawer-paper": {
-          width: menuDrawerWidth,
+          width: isMobile ? "auto" : menuDrawerWidth,
           boxSizing: "border-box",
           p: 2,
-          top: 64,
-          height: `calc(100% - 64px)`, // AppBarの高さを引いたビューポートの高さ
+          ...(isMobile ? {
+            borderTopRightRadius: 8,
+            borderTopLeftRadius: 8,
+            height: "80vh",
+          } : {}),
+          ...(!isMobile ? {
+            top: 64,
+            height: `calc(100% - 64px)`,
+          } : {}),
         },
       }}
-      variant={"permanent"}
-      anchor={"right"}
+      variant={isMobile ? "temporary" : "permanent"}
+      anchor={isMobile ? "bottom" : "right"}
+      open={open}
+      onClose={onClose}
+      ModalProps={{
+        keepMounted: true,
+      }}
     >
       <Stack sx={{ height: "100%" }} spacing={2}>
         <Typography fontWeight={"fontWeightBold"}>日時： {currentDay}</Typography>
-        <DailySummary dailyTransactions={dailyTransactions}/>
+        <DailySummary
+          dailyTransactions={dailyTransactions}
+          columns={isMobile ? 3 : 2}
+        />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{

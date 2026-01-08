@@ -73,6 +73,9 @@ const SideBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDraw
         keepMounted
         onTransitionEnd={handleDrawerTransitionEnd}
         onClose={handleDrawerClose}
+        ModalProps={{
+          keepMounted: true,
+        }}
         sx={{
           display: { xs: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
