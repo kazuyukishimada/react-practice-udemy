@@ -30,17 +30,14 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema } from "../validations/schema";
 import { Schema } from "../validations/schema";
+import { useAppContext } from "../context/AppContext";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
-  onSaveTransaction: (transaction: Schema) => Promise<void>;
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>;
   setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>;
-  onUpdateTransaction: (transaction: Schema, transactionId: string) => Promise<void>;
-  isMobile: boolean;
   isDialogOpen: boolean;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -56,15 +53,17 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
-  onSaveTransaction,
   selectedTransaction,
-  onDeleteTransaction,
   setSelectedTransaction,
-  onUpdateTransaction,
-  isMobile,
   isDialogOpen,
   setIsDialogOpen,
 }: TransactionFormProps) => {
+  const {
+    isMobile,
+    onSaveTransaction,
+    onDeleteTransaction,
+    onUpdateTransaction
+  } = useAppContext();
   const formWidth = 320;
 
   const incomeCategories: CategoryItem[] = [
@@ -132,7 +131,7 @@ const TransactionForm = ({
         console.error(error);
       })
     } else {
-      onSaveTransaction(data)
+      onSaveTransaction(data as Transaction)
       .then(() => {
       })
       .catch((error) => {
@@ -238,9 +237,6 @@ const TransactionForm = ({
                 {...field}
                 label="日付"
                 type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 error={!!errors.date}
                 helperText={errors.date?.message}
               />

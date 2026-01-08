@@ -15,13 +15,14 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Transaction } from '../types';
 import { financeCalculations } from '../utils/financeCalculations';
 import { useTheme } from '@mui/material/styles';
 import { Grid } from '@mui/material';
 import { formatCurrency } from '../utils/formatting';
 import IconComponents from './common/IconComponents';
 import { compareDesc, parseISO } from 'date-fns';
+import useMonthlyTransactions from '../Hooks/useMonthlyTransactions';
+import { useAppContext } from '../context/AppContext';
 
 interface TransactionTableHeadProps {
   numSelected: number;
@@ -136,15 +137,9 @@ function FinantialItem({ title, value, color }: FinantialItemProps) {
   )
 }
 
-interface TransactionTableProps {
-  monthlyTransactions: Transaction[];
-  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>,
-}
-
-export default function TransactionTable({
-  monthlyTransactions,
-  onDeleteTransaction,
-}: TransactionTableProps) {
+export default function TransactionTable () {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { onDeleteTransaction } = useAppContext();
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);

@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartData } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { Box, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { ExpenseCategory, IncomeCategory, Transaction, TransactionType } from '../types';
+import { ExpenseCategory, IncomeCategory, TransactionType } from '../types';
 import { useTheme } from '@mui/material/styles';
+import { useAppContext } from '../context/AppContext';
+import useMonthlyTransactions from '../Hooks/useMonthlyTransactions';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface CategoryChartProps {
-  monthlyTransactions: Transaction[],
-  isLoading: boolean,
-}
-
-const CategoryChart = ({
-  monthlyTransactions,
-  isLoading,
-}:CategoryChartProps) => {
+const CategoryChart = () => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { isLoading } = useAppContext();
   const theme = useTheme();
   const options = {
     maintainAspectRatio: false,

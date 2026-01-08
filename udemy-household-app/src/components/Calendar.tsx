@@ -4,16 +4,16 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import jaLocale from '@fullcalendar/core/locales/ja'
 import { DatesSetArg, EventContentArg } from '@fullcalendar/core'
 import { calclulateDailyBalance } from '../utils/financeCalculations'
-import { Balance, CalendarContent, Transaction } from '../types'
-import '../calendar.css'
+import { Balance, CalendarContent } from '../types'
 import { formatCurrency } from '../utils/formatting'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import { useTheme } from '@mui/material'
 import { isSameMonth } from 'date-fns'
+import useMonthlyTransactions from '../Hooks/useMonthlyTransactions'
+import { useAppContext } from '../context/AppContext'
+import '../calendar.css'
 
 interface CalendarProps {
-  monthlyTransactions: Transaction[],
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>,
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>,
   currentDay: string,
   today: string,
@@ -21,13 +21,13 @@ interface CalendarProps {
 }
 
 const Calendar = ({
-  monthlyTransactions,
-  setCurrentMonth,
   setCurrentDay,
   currentDay,
   today,
   onDateclick,
 }: CalendarProps) => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { setCurrentMonth } = useAppContext();
   const theme = useTheme();
   const dailyBalances = calclulateDailyBalance(monthlyTransactions);
 

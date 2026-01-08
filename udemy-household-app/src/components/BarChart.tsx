@@ -10,11 +10,11 @@ import {
   ChartData,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { Transaction } from '../types';
 import { calclulateDailyBalance } from '../utils/financeCalculations';
 import { Box, Typography, useTheme } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import useMonthlyTransactions from '../Hooks/useMonthlyTransactions';
+import { useAppContext } from '../context/AppContext';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,15 +24,9 @@ ChartJS.register(
   Legend
 );
 
-interface BarChartProps {
-  monthlyTransactions: Transaction[],
-  isLoading: boolean,
-}
-
-const BarChart = ({
-  monthlyTransactions,
-  isLoading,
-}: BarChartProps) => {
+const BarChart = () => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { isLoading } = useAppContext();
   const theme = useTheme();
   const options = {
     maintainAspectRatio: false,
