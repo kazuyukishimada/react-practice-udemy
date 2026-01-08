@@ -1,0 +1,93 @@
+import React from 'react'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import jaLocale from '@fullcalendar/core/locales/ja'
+import { DatesSetArg, EventContentArg } from '@fullcalendar/core'
+import { calclulateDailyBalance } from '../utils/financeCalculations'
+import { Balance, CalendarContent } from '../types'
+import { formatCurrency } from '../utils/formatting'
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
+import { useTheme } from '@mui/material'
+import { isSameMonth } from 'date-fns'
+import useMonthlyTransactions from '../Hooks/useMonthlyTransactions'
+import { useAppContext } from '../context/AppContext'
+import '../calendar.css'
+
+interface CalendarProps {
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>,
+  currentDay: string,
+  today: string,
+  onDateclick: (dateInfo: DateClickArg) => void,
+}
+
+const Calendar = ({
+  setCurrentDay,
+  currentDay,
+  today,
+  onDateclick,
+}: CalendarProps) => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { setCurrentMonth } = useAppContext();
+  const theme = useTheme();
+  const dailyBalances = calclulateDailyBalance(monthlyTransactions);
+
+  const createCalendarEvents = (dailyBalances: Record<string, Balance>):CalendarContent[] => {
+    return Object.keys(dailyBalances).map((date) => {
+      const {income, expense, balance} = dailyBalances[date];
+      return {
+        start: date,
+        income: formatCurrency(income),
+        expense: formatCurrency(expense),
+        balance: formatCurrency(balance),
+      }
+    })
+  }
+
+  const calendarEvents = createCalendarEvents(dailyBalances);
+
+  const backgroundEvent = {
+    start: currentDay,
+    display: 'background',
+    backgroundColor: theme.palette.incomeColor.light,
+  }
+
+  const renderEventContent = (eventInfo: EventContentArg) => {
+    return (
+      <div>
+        <div className='money' id="event-income">
+          {eventInfo.event.extendedProps.income}
+        </div>
+        <div className='money' id="event-expense">
+          {eventInfo.event.extendedProps.expense}
+        </div>
+        <div className='money' id="event-balance">
+          {eventInfo.event.extendedProps.balance}
+        </div>
+      </div>
+    )
+  }
+
+  // 月の日付取得
+  const handleDatesSet = (datesetInfo: DatesSetArg) => {
+    const currentMonth = datesetInfo.view.currentStart;
+    setCurrentMonth(currentMonth);
+    const todayDate = new Date();
+    if (isSameMonth(todayDate, currentMonth)) {
+      setCurrentDay(today);
+    };
+  }
+
+  return (
+    <FullCalendar
+      locale={jaLocale}
+      plugins={[dayGridPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      events={[...calendarEvents, backgroundEvent]}
+      eventContent={renderEventContent}
+      datesSet={handleDatesSet}
+      dateClick={onDateclick}
+    />
+  )
+}
+
+export default Calendar
